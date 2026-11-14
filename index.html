@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mein Wortschatz</title>
+<title>Fiktur's Wortschatz</title>
 <meta name="theme-color" content="#0b2a1b">
 <meta name="description" content="German vocabulary trainer: 2,000 words, conjugations, flashcards and progress tracking.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -203,7 +203,7 @@ const closeNav=()=>{$("nav").classList.remove("open");$("nb").classList.add("hid
 function go(v,c){st.coll=c||"";st.c="all";st.n=100;if(v==="w"){st.type="all";st.gen="any";st.lvl="all";st.s="all"}
  ["w","f","d"].forEach(t=>$("t"+t).classList.toggle("hide",t!==v));
  $("ttl").textContent=TT[c]||{w:"Mein Wortschatz",f:"Flashcards",d:"Dashboard"}[v];
- $("nav").innerHTML="<h2>Mein Wortschatz</h2>"+NAV.map(n=>n[0]==="--"?`<small>${n[1]}</small>`:`<button class="${n[0]===v&&n[1]===(c||"")?"on":""}" data-v="${n[0]}" data-c="${n[1]}">${n[2]}</button>`).join("");
+ $("nav").innerHTML="<h2>Fiktur's Wortschatz</h2>"+NAV.map(n=>n[0]==="--"?`<small>${n[1]}</small>`:`<button class="${n[0]===v&&n[1]===(c||"")?"on":""}" data-v="${n[0]}" data-c="${n[1]}">${n[2]}</button>`).join("");
  if(v==="w"){$("fPanel").classList.add("hide");draw()}if(v==="f")fc();if(v==="d")dash();closeNav();scrollTo(0,0)}
 $("burger").onclick=()=>{$("nav").classList.add("open");$("nb").classList.remove("hide")};$("nb").onclick=closeNav;
 $("nav").onclick=e=>{const b=e.target.closest("[data-v]");if(b)go(b.dataset.v,b.dataset.c)};
