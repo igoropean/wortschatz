@@ -1,6 +1,6 @@
 // Bump CACHE when you change any file so installed apps pick up the update.
-const CACHE = "wortschatz-v1";
-const FILES = ["./", "index.html", "words-data.js", "manifest.webmanifest",
+const CACHE = "wortschatz-v3";
+const FILES = ["./", "index.html", "words-data.js", "grammar-data.js", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

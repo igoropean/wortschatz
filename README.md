@@ -13,7 +13,7 @@
 - **iPhone (Safari):** open the link, tap Share → **Add to Home Screen**.
 
 ## Updating
-After changing any file, edit `CACHE = "wortschatz-v1"` in `sw.js` to a new value (e.g. `v2`) so installed copies refresh.
+After changing any file, edit `CACHE = "wortschatz-v3"` in `sw.js` to a new value (e.g. `v2`) so installed copies refresh.
 
 ## Your data
 Added words, bookmarks and learned words are saved in the browser on that device. Use **Backup → Copy backup** to move them between devices.
