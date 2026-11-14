@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mein Wortschatz</title>
+    <meta name="theme-color" content="#0b2a1b" />
+    <meta
+      name="description"
+      content="German vocabulary trainer: 2,000 words, conjugations, flashcards and progress tracking." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Wortschatz" />
+    <style>
+      :root {
+        --bg: #f6f4ee;
+        --card: #fff;
+        --ink: #1c2a22;
+        --mute: #6b7a70;
+        --line: #dcdfd6;
+        --acc: #1f7a4d;
+        --accink: #fff;
+        --der: #2563eb;
+        --die: #db2777;
+        --das: #16a34a;
+        --chip: #eceee6;
+        --warn: #c2410c;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #08180f;
+          --card: #0f2a1c;
+          --ink: #eef3ee;
+          --mute: #8aa595;
+          --line: #1d3d2b;
+          --acc: #f1ece0;
+          --accink: #08180f;
+          --der: #60a5fa;
+          --die: #f472b6;
+          --das: #4ade80;
+          --chip: #14331f;
+          --warn: #fb923c;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #08180f;
+        --card: #0f2a1c;
+        --ink: #eef3ee;
+        --mute: #8aa595;
+        --line: #1d3d2b;
+        --acc: #f1ece0;
+        --accink: #08180f;
+        --der: #60a5fa;
+        --die: #f472b6;
+        --das: #4ade80;
+        --chip: #14331f;
+        --warn: #fb923c;
+        color-scheme: dark;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+        height: 100%;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          15px/1.4 "DM Sans",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          sans-serif;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 16px 14px 70px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      .btn {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 999px;
+        padding: 7px 14px;
+        cursor: pointer;
+      }
+      .btn.on,
+      .btn.pri {
+        background: var(--acc);
+        color: var(--accink);
+        border-color: var(--acc);
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 10px;
+      }
+      .tabs .btn {
+        flex: 1;
+        text-align: center;
+      }
+      .inp {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--card);
+      }
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .sp {
+        flex: 1;
+      }
+      .mute {
+        color: var(--mute);
+        font-size: 13px;
+      }
+      .der.on {
+        background: var(--der);
+        border-color: var(--der);
+        color: #fff;
+      }
+      .die.on {
+        background: var(--die);
+        border-color: var(--die);
+        color: #fff;
+      }
+      .das.on {
+        background: var(--das);
+        border-color: var(--das);
+        color: #fff;
+      }
+      .der {
+        color: var(--der);
+      }
+      .die {
+        color: var(--die);
+      }
+      .das {
+        color: var(--das);
+      }
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+      .hide {
+        display: none !important;
+      }
+      .form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .form .inp {
+        padding: 9px 10px;
+        background: var(--bg);
+      }
+      .wide {
+        grid-column: 1/-1;
+      }
+      .tw {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .wt {
+        min-width: 540px;
+      }
+      th {
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--mute);
+        text-align: left;
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      .de {
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .ex {
+        display: block;
+        color: var(--mute);
+        font-size: 13px;
+        margin-top: 2px;
+      }
+      .tag {
+        display: inline-block;
+        background: var(--chip);
+        color: var(--mute);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-size: 12px;
+      }
+      .ic {
+        border: 1px solid var(--line);
+        background: transparent;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        margin-right: 6px;
+        line-height: 1;
+      }
+      .ic.on {
+        background: var(--acc);
+        color: var(--accink);
+        border-color: var(--acc);
+      }
+      tr.lrn .de {
+        opacity: 0.55;
+      }
+      .mine td:first-child {
+        box-shadow: inset 3px 0 var(--acc);
+      }
+      .more {
+        display: block;
+        margin: 16px auto;
+      }
+      .empty {
+        padding: 30px;
+        text-align: center;
+        color: var(--mute);
+      }
+      .ov {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+        z-index: 20;
+      }
+      .md {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 560px;
+        max-height: 90%;
+        overflow: auto;
+        padding: 18px;
+      }
+      .mh {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .mt {
+        font-size: 20px;
+      }
+      .mh .x {
+        margin-left: auto;
+      }
+      .lv {
+        background: #facc15;
+        color: #422006;
+        border-radius: 6px;
+        padding: 1px 8px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .ct {
+        margin: 10px 0;
+      }
+      .ct th {
+        font-size: 13px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--ink);
+      }
+      .ct td {
+        padding: 8px 10px;
+        white-space: nowrap;
+      }
+      .btn.bm {
+        color: var(--warn);
+        border-color: var(--warn);
+      }
+      .btn.bm.on {
+        background: var(--warn);
+        color: #fff;
+      }
+      .btn.ok {
+        color: var(--das);
+        border-color: var(--das);
+      }
+      .btn.ok.on {
+        background: var(--das);
+        color: #fff;
+      }
+      .card {
+        min-height: 260px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 24px;
+        user-select: none;
+      }
+      .card .big {
+        font-size: 34px;
+        font-weight: 700;
+      }
+      .card .sm {
+        color: var(--mute);
+      }
+      .bar {
+        height: 10px;
+        background: var(--chip);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: var(--acc);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+      }
+      .stat b {
+        display: block;
+        font-size: 26px;
+      }
+      .bl {
+        display: grid;
+        grid-template-columns: 90px 1fr 80px;
+        gap: 10px;
+        align-items: center;
+        margin: 9px 0;
+      }
+      .wk {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 110px;
+      }
+      .wk div {
+        flex: 1;
+        text-align: center;
+        font-size: 12px;
+        color: var(--mute);
+      }
+      .wk i {
+        display: block;
+        background: var(--acc);
+        border-radius: 4px 4px 0 0;
+        min-height: 2px;
+        margin-bottom: 4px;
+      }
+      h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Mein Wortschatz</h1>
+        <div class="row" style="margin: 0">
+          <button class="btn" id="inst" hidden>Install app</button
+          ><button class="btn" id="addT">+ Add word</button
+          ><button class="btn" id="dataT">Backup</button>
+        </div>
+      </header>
+      <div class="tabs">
+        <button class="btn on" data-tab="w">Words</button
+        ><button class="btn" data-tab="f">Flashcards</button
+        ><button class="btn" data-tab="d">Dashboard</button>
+      </div>
+
+      <div class="panel hide" id="addP">
+        <div class="form">
+          <input class="inp" id="fDe" placeholder="German (e.g. Haus)" /><input
+            class="inp"
+            id="fEn"
+            placeholder="English (e.g. house)" />
+          <select class="inp" id="fType">
+            <option>noun</option>
+            <option>verb</option>
+            <option>adjective</option>
+            <option>adverb</option>
+            <option>pronoun</option>
+            <option>preposition</option>
+            <option>conjunction</option>
+            <option>other</option>
+          </select>
+          <select class="inp" id="fGen">
+            <option value="">No gender</option>
+            <option>der</option>
+            <option>die</option>
+            <option>das</option>
+          </select>
+          <select class="inp" id="fLvl">
+            <option value="">Level</option>
+            <option>A1</option>
+            <option>A2</option>
+            <option>B1</option>
+            <option>B2</option>
+            <option>C1</option>
+          </select>
+          <input
+            class="inp wide"
+            id="fEx"
+            placeholder="Example sentence (optional)" />
+          <div class="wide row">
+            <button class="btn pri" id="fSave">Save word</button
+            ><button class="btn" id="fCancel">Cancel</button
+            ><span class="mute" id="fMsg"></span>
+          </div>
+        </div>
+      </div>
+      <div class="panel hide" id="dataP">
+        <p class="mute" style="margin-top: 0">
+          Your added words, bookmarks and learned words are stored in this
+          browser only. Copy a backup to keep them safe or move them to another
+          device.
+        </p>
+        <div class="row">
+          <button class="btn" id="exp">Copy backup</button
+          ><button class="btn" id="imp">Import pasted backup</button>
+        </div>
+        <textarea
+          class="inp"
+          id="box"
+          rows="3"
+          placeholder="Paste backup here to import…"></textarea>
+        <div class="mute" id="dMsg"></div>
+      </div>
+
+      <section id="tw">
+        <input
+          class="inp"
+          id="q"
+          placeholder="Search German or English…"
+          autocomplete="off"
+          style="margin-bottom: 10px" />
+        <div class="row" id="fTypes"></div>
+        <div class="row" id="fGens"></div>
+        <div class="row" id="fLv"></div>
+        <div class="row" id="fSt"></div>
+        <div class="row"><span class="mute" id="count"></span></div>
+        <div class="tw">
+          <table class="wt">
+            <thead>
+              <tr>
+                <th>German</th>
+                <th>English</th>
+                <th>Type</th>
+                <th>Level</th>
+              </tr>
+            </thead>
+            <tbody id="tb"></tbody>
+          </table>
+        </div>
+        <button class="btn more" id="more">Show more</button>
+      </section>
+      <section id="tf" class="hide"></section>
+      <section id="td" class="hide"></section>
+    </div>
+    <div id="ov" class="ov hide"></div>
+    <script src="words-data.js"></script>
+    <script>
+      const KEY = "wortschatz-v2",
+        PR = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"],
+        $ = (i) => document.getElementById(i);
+      let S;
+      try {
+        S = Object.assign(
+          { mine: [], prog: {} },
+          JSON.parse(localStorage.getItem(KEY)),
+        );
+      } catch (e) {
+        S = { mine: [], prog: {} };
+      }
+      const save = () => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(S));
+        } catch (e) {}
+      };
+      const norm = (s) =>
+        (s || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/ß/g, "ss");
+      const esc = (s) =>
+        (s || "").replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const mk = (a, m, i) => ({
+        de: a[0],
+        en: a[1],
+        g: a[2],
+        t: a[3],
+        l: a[4],
+        ex: a[5],
+        mine: m,
+        i,
+        k: a[0] + "|" + a[1],
+      });
+      let ALL = [];
+      const build = () => {
+        ALL = [
+          ...S.mine.map((a, i) => mk(a, 1, i)),
+          ...BASE.map((a, i) => mk(a, 0, i)),
+        ];
+      };
+      build();
+      const P = (w) => S.prog[w.k] || {},
+        isL = (w) => !!P(w).l,
+        isB = (w) => !!P(w).b;
+      function flip(w, f) {
+        const p = (S.prog[w.k] = S.prog[w.k] || {});
+        if (f === "l") p.l = p.l ? 0 : Date.now();
+        else p.b = p.b ? 0 : 1;
+        if (!p.l && !p.b) delete S.prog[w.k];
+        save();
+      }
+      const speak = (t) => {
+        if (window.speechSynthesis) {
+          const u = new SpeechSynthesisUtterance(t);
+          u.lang = "de-DE";
+          speechSynthesis.cancel();
+          speechSynthesis.speak(u);
+        }
+      };
+      const st = {
+        q: "",
+        type: "all",
+        gen: "any",
+        lvl: "all",
+        s: "all",
+        n: 100,
+      };
+      let VIEW = [];
+      function chips(el, items, key) {
+        el.innerHTML = "";
+        items.forEach(([v, l, c]) => {
+          const b = document.createElement("button");
+          b.className = "btn " + (c || "") + (st[key] === v ? " on" : "");
+          b.textContent = l;
+          b.onclick = () => {
+            st[key] = v;
+            st.n = 100;
+            draw();
+          };
+          el.appendChild(b);
+        });
+      }
+      const art = (w) => (w.g ? `<span class="${w.g}">${w.g}</span> ` : "");
+      function filt(w, o) {
+        const q = norm(o.q || "");
+        if (o.type === "other") {
+          if (["noun", "verb", "adjective"].includes(w.t)) return 0;
+        } else if (o.type && o.type !== "all" && w.t !== o.type) return 0;
+        if (o.gen && o.gen !== "any" && w.g !== o.gen) return 0;
+        if (o.lvl && o.lvl !== "all" && w.l !== o.lvl) return 0;
+        if (o.s === "new" && isL(w)) return 0;
+        if (o.s === "done" && !isL(w)) return 0;
+        if (o.s === "star" && !isB(w)) return 0;
+        if (o.s === "mine" && !w.mine) return 0;
+        return !q || norm(w.de).includes(q) || norm(w.en).includes(q);
+      }
+      function draw() {
+        chips(
+          $("fTypes"),
+          [
+            ["all", "All types"],
+            ["noun", "Nouns"],
+            ["verb", "Verbs"],
+            ["adjective", "Adjectives"],
+            ["other", "Other"],
+          ],
+          "type",
+        );
+        chips(
+          $("fGens"),
+          [
+            ["any", "Any gender"],
+            ["der", "der", "der"],
+            ["die", "die", "die"],
+            ["das", "das", "das"],
+          ],
+          "gen",
+        );
+        chips(
+          $("fLv"),
+          [
+            ["all", "All levels"],
+            ["A1", "A1"],
+            ["A2", "A2"],
+            ["B1", "B1"],
+            ["B2", "B2"],
+          ].filter((x) => x[0] === "all" || ALL.some((w) => w.l === x[0])),
+          "lvl",
+        );
+        chips(
+          $("fSt"),
+          [
+            ["all", "Everything"],
+            ["new", "To learn"],
+            ["done", "✓ Learned"],
+            ["star", "★ Bookmarked"],
+            ["mine", "My words (" + S.mine.length + ")"],
+          ],
+          "s",
+        );
+        VIEW = ALL.filter((w) => filt(w, st));
+        $("count").textContent = VIEW.length.toLocaleString() + " words";
+        const v = VIEW.slice(0, st.n);
+        $("tb").innerHTML = v.length
+          ? v
+              .map(
+                (w, n) =>
+                  `<tr class="${w.mine ? "mine " : ""}${isL(w) ? "lrn" : ""}"><td><button class="ic ${isL(w) ? "on" : ""}" data-a="l" data-n="${n}" title="Mark learned">✓</button><button class="ic ${isB(w) ? "on" : ""}" data-a="b" data-n="${n}" title="Bookmark">★</button><span class="de" data-a="o" data-n="${n}">${art(w)}${esc(w.de)}</span>${w.ex ? `<span class="ex">${esc(w.ex)}</span>` : ""}</td><td>${esc(w.en)}</td><td><span class="tag">${esc(w.t)}</span></td><td class="mute">${esc(w.l)}</td></tr>`,
+              )
+              .join("")
+          : `<tr><td colspan="4" class="empty">No matches. Try another search, or add this word yourself.</td></tr>`;
+        $("more").style.display = VIEW.length > st.n ? "block" : "none";
+      }
+      $("q").oninput = (e) => {
+        st.q = e.target.value;
+        st.n = 100;
+        draw();
+      };
+      $("more").onclick = () => {
+        st.n += 200;
+        draw();
+      };
+      $("tb").onclick = (e) => {
+        const b = e.target.closest("[data-a]");
+        if (!b) return;
+        const w = VIEW[+b.dataset.n];
+        if (b.dataset.a === "o") openW(w);
+        else {
+          flip(w, b.dataset.a);
+          draw();
+        }
+      };
+      function closeM() {
+        $("ov").classList.add("hide");
+        $("ov").innerHTML = "";
+      }
+      function openW(w) {
+        const c = CONJ[w.de];
+        let h = `<div class="mh"><b class="mt">${art(w)}${esc(w.de)}</b>${w.l ? `<span class="lv">${w.l}</span>` : ""}<button class="ic x" id="mx">✕</button></div><p>${esc(w.en)} <span class="tag">${esc(w.t)}</span></p>`;
+        if (c)
+          h += `<p>Auxiliary: <b>${c[0] === "s" ? "sein" : "haben"}</b> &nbsp; Partizip II: <b>${esc(c[1])}</b></p><div style="overflow-x:auto"><table class="ct"><tr><th></th><th>Präsens</th><th>Präteritum</th><th>Perfekt</th></tr>${PR.map((p, i) => `<tr><td><b>${p}</b></td><td>${esc(c[2][i])}</td><td>${esc(c[3][i])}</td><td>${esc(c[4][i])}</td></tr>`).join("")}</table></div>${c[5] ? `<p class="mute">${c[5]}</p>` : ""}`;
+        if (w.ex) h += `<p class="mute">${esc(w.ex)}</p>`;
+        h += `<div class="row" style="margin-top:14px"><button class="btn bm ${isB(w) ? "on" : ""}" id="mb">${isB(w) ? "★ Bookmarked" : "☆ Bookmark"}</button><button class="btn ok ${isL(w) ? "on" : ""}" id="ml">${isL(w) ? "✓ Learned" : "Mark as learned"}</button><button class="btn" id="ms">🔊 Listen</button>${w.mine ? `<button class="btn" id="md">Delete</button>` : ""}</div>`;
+        $("ov").innerHTML = `<div class="md">${h}</div>`;
+        $("ov").classList.remove("hide");
+        $("mx").onclick = closeM;
+        $("ms").onclick = () => speak(w.de.replace(/^sich /, ""));
+        $("mb").onclick = () => {
+          flip(w, "b");
+          openW(w);
+          draw();
+        };
+        $("ml").onclick = () => {
+          flip(w, "l");
+          openW(w);
+          draw();
+        };
+        if (w.mine)
+          $("md").onclick = () => {
+            if (confirm("Delete this word?")) {
+              delete S.prog[w.k];
+              S.mine.splice(w.i, 1);
+              save();
+              build();
+              closeM();
+              draw();
+            }
+          };
+      }
+      $("ov").onclick = (e) => {
+        if (e.target === $("ov")) closeM();
+      };
+      document.onkeydown = (e) => {
+        if (e.key === "Escape") closeM();
+      };
+      const tog = (p) =>
+        ["addP", "dataP"].forEach((i) =>
+          $(i).classList.toggle(
+            "hide",
+            i !== p || !$(i).classList.contains("hide"),
+          ),
+        );
+      $("addT").onclick = () => {
+        tog("addP");
+        $("fDe").focus();
+      };
+      $("dataT").onclick = () => tog("dataP");
+      $("fCancel").onclick = () => $("addP").classList.add("hide");
+      $("fSave").onclick = () => {
+        const de = $("fDe").value.trim(),
+          en = $("fEn").value.trim();
+        if (!de || !en) {
+          $("fMsg").textContent = "German and English are both needed.";
+          return;
+        }
+        if (
+          ALL.some((w) => norm(w.de) === norm(de) && norm(w.en) === norm(en))
+        ) {
+          $("fMsg").textContent = "That word is already in the list.";
+          return;
+        }
+        S.mine.unshift([
+          de,
+          en,
+          $("fGen").value,
+          $("fType").value,
+          $("fLvl").value,
+          $("fEx").value.trim(),
+        ]);
+        save();
+        build();
+        ["fDe", "fEn", "fEx"].forEach((i) => ($(i).value = ""));
+        $("fMsg").textContent = "Saved ✓";
+        $("fDe").focus();
+        draw();
+      };
+      $("exp").onclick = async () => {
+        const t = JSON.stringify({ v: 2, mine: S.mine, prog: S.prog });
+        $("box").value = t;
+        try {
+          await navigator.clipboard.writeText(t);
+          $("dMsg").textContent = "Backup copied.";
+        } catch (e) {
+          $("box").select();
+          $("dMsg").textContent = "Select and copy the text above.";
+        }
+      };
+      $("imp").onclick = () => {
+        try {
+          let a = JSON.parse($("box").value);
+          if (Array.isArray(a)) a = { mine: a, prog: {} };
+          if (!Array.isArray(a.mine)) throw 0;
+          let n = 0;
+          a.mine.forEach((w) => {
+            if (
+              Array.isArray(w) &&
+              w[0] &&
+              w[1] &&
+              !S.mine.some((m) => m[0] === w[0] && m[1] === w[1])
+            ) {
+              S.mine.push(w.slice(0, 6));
+              n++;
+            }
+          });
+          Object.entries(a.prog || {}).forEach(([k, p]) => {
+            const o = S.prog[k] || {};
+            S.prog[k] = { l: Math.max(o.l || 0, p.l || 0), b: o.b || p.b || 0 };
+          });
+          save();
+          build();
+          draw();
+          $("dMsg").textContent = n + " new words imported; progress merged.";
+        } catch (e) {
+          $("dMsg").textContent = "That doesn’t look like a valid backup.";
+        }
+      };
+
+      /* Flashcards */
+      const D = {
+        scope: "new",
+        lvl: "all",
+        size: 20,
+        dir: "de",
+        q: [],
+        total: 0,
+        open: false,
+        started: false,
+      };
+      const shuf = (a) => {
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      };
+      const sel = (id, opts, v) =>
+        `<select class="inp" id="${id}" style="width:auto">${opts.map(([a, b]) => `<option value="${a}" ${String(a) === String(v) ? "selected" : ""}>${b}</option>`).join("")}</select>`;
+      function startDeck() {
+        D.q = shuf(
+          ALL.filter((w) => filt(w, { s: D.scope, lvl: D.lvl })),
+        ).slice(0, D.size);
+        D.total = D.q.length;
+        D.open = false;
+        D.started = true;
+        fc();
+      }
+      function fc() {
+        const el = $("tf");
+        let h = `<div class="panel row">${sel(
+          "dS",
+          [
+            ["new", "To learn"],
+            ["star", "★ Bookmarked"],
+            ["mine", "My words"],
+            ["all", "Everything"],
+          ],
+          D.scope,
+        )}${sel(
+          "dL",
+          [
+            ["all", "All levels"],
+            ["A1", "A1"],
+            ["A2", "A2"],
+            ["B1", "B1"],
+          ],
+          D.lvl,
+        )}${sel(
+          "dZ",
+          [
+            [10, "10 cards"],
+            [20, "20 cards"],
+            [50, "50 cards"],
+            [9999, "All"],
+          ],
+          D.size,
+        )}${sel(
+          "dD",
+          [
+            ["de", "German → English"],
+            ["en", "English → German"],
+          ],
+          D.dir,
+        )}<button class="btn pri" id="dGo">${D.started ? "Restart" : "Start"}</button></div>`;
+        if (D.started) {
+          const w = D.q[0];
+          if (!w)
+            h += `<div class="panel card" style="cursor:default"><div class="big">🎉 Deck finished</div><div class="sm">${D.total} cards reviewed. Change the settings above for a new round.</div></div>`;
+          else {
+            const de = `<div class="big">${art(w)}${esc(w.de)}</div>`,
+              en = `<div class="big">${esc(w.en)}</div>`,
+              front = D.dir === "de" ? de : en,
+              back = D.dir === "de" ? en : de;
+            h += `<div class="mute" style="margin:0 0 8px">${D.total - D.q.length} / ${D.total} done</div><div class="bar" style="margin-bottom:12px"><i style="width:${((D.total - D.q.length) / D.total) * 100}%"></i></div><div class="panel card" id="cd">${D.open ? `${front}<hr style="width:60%;border:0;border-top:1px solid var(--line)">${back}<div class="sm">${esc(w.ex)}</div><div class="sm"><span class="tag">${esc(w.t)}</span> ${esc(w.l)}</div>` : `${front}<div class="sm">Tap to reveal</div>`}</div>
+   <div class="row" style="justify-content:center"><button class="btn" id="dSp">🔊</button>${CONJ[w.de] ? `<button class="btn" id="dCj">Conjugation</button>` : ""}${D.open ? `<button class="btn bm" id="dAg">Again</button><button class="btn ok" id="dOk">Got it ✓</button>` : `<button class="btn pri" id="dFl">Show answer</button>`}</div>`;
+          }
+        } else
+          h += `<div class="panel card" style="cursor:default"><div class="big">Flashcards</div><div class="sm">Pick a deck above and press Start.<br>Words you mark “Got it” are saved as learned.</div></div>`;
+        el.innerHTML = h;
+        const g = (i) => $(i);
+        ["dS:scope", "dL:lvl", "dZ:size", "dD:dir"].forEach((x) => {
+          const [i, k] = x.split(":");
+          g(i).onchange = (e) => {
+            D[k] = k === "size" ? +e.target.value : e.target.value;
+            if (k === "dir") fc();
+          };
+        });
+        g("dGo").onclick = startDeck;
+        const w = D.q[0];
+        if (!w || !D.started) return;
+        const rv = () => {
+          D.open = true;
+          fc();
+        };
+        g("cd").onclick = () => {
+          D.open = !D.open;
+          fc();
+        };
+        if (g("dFl"))
+          g("dFl").onclick = (e) => {
+            e.stopPropagation();
+            rv();
+          };
+        g("dSp").onclick = () => speak(w.de.replace(/^sich /, ""));
+        if (g("dCj")) g("dCj").onclick = () => openW(w);
+        if (g("dAg"))
+          g("dAg").onclick = () => {
+            D.q.push(D.q.shift());
+            D.open = false;
+            fc();
+          };
+        if (g("dOk"))
+          g("dOk").onclick = () => {
+            if (!isL(w)) flip(w, "l");
+            D.q.shift();
+            D.open = false;
+            fc();
+          };
+      }
+
+      /* Dashboard */
+      function dash() {
+        const L = ALL.filter(isL),
+          tot = ALL.length,
+          pc = (a, b) => (b ? Math.round((a / b) * 100) : 0),
+          day = (t) => new Date(t).toDateString();
+        const days = new Set(L.map((w) => day(P(w).l)));
+        let streak = 0,
+          d = new Date();
+        if (!days.has(d.toDateString())) d.setDate(d.getDate() - 1);
+        while (days.has(d.toDateString())) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        }
+        const wk = [...Array(7)].map((_, i) => {
+          const x = new Date();
+          x.setDate(x.getDate() - 6 + i);
+          return [
+            x.toLocaleDateString("en", { weekday: "short" }),
+            L.filter((w) => day(P(w).l) === x.toDateString()).length,
+          ];
+        });
+        const mx = Math.max(1, ...wk.map((x) => x[1]));
+        const bars = (items, f) =>
+          items
+            .map(([n, l]) => {
+              const a = ALL.filter((w) => f(w, l)),
+                b = a.filter(isL).length;
+              return `<div class="bl"><span>${n}</span><div class="bar"><i style="width:${pc(b, a.length)}%"></i></div><span class="mute">${b}/${a.length}</span></div>`;
+            })
+            .join("");
+        $("td").innerHTML =
+          `<div class="stats"><div class="stat"><b>${L.length}</b>words learned</div><div class="stat"><b>${pc(L.length, tot)}%</b>of ${tot.toLocaleString()} words</div><div class="stat"><b>${streak}</b>day streak</div><div class="stat"><b>${ALL.filter(isB).length}</b>bookmarked</div></div>
+ <div class="panel"><h3>Overall progress</h3><div class="bar"><i style="width:${pc(L.length, tot)}%"></i></div></div>
+ <div class="panel"><h3>Learned in the last 7 days</h3><div class="wk">${wk.map(([n, c]) => `<div><i style="height:${(c / mx) * 80}px"></i>${c}<br>${n}</div>`).join("")}</div></div>
+ <div class="panel"><h3>By level</h3>${bars(
+   [
+     ["A1", "A1"],
+     ["A2", "A2"],
+     ["B1", "B1"],
+     ["B2", "B2"],
+   ].filter((x) => ALL.some((w) => w.l === x[1])),
+   (w, l) => w.l === l,
+ )}</div>
+ <div class="panel"><h3>By type</h3>${bars(
+   [
+     ["Nouns", "noun"],
+     ["Verbs", "verb"],
+     ["Adjectives", "adjective"],
+     ["Other", "other"],
+   ],
+   (w, t) =>
+     t === "other" ? !["noun", "verb", "adjective"].includes(w.t) : w.t === t,
+ )}</div>`;
+      }
+
+      document.querySelectorAll(".tabs .btn").forEach(
+        (b) =>
+          (b.onclick = () => {
+            document
+              .querySelectorAll(".tabs .btn")
+              .forEach((x) => x.classList.toggle("on", x === b));
+            ["w", "f", "d"].forEach((t) =>
+              $("t" + t).classList.toggle("hide", t !== b.dataset.tab),
+            );
+            if (b.dataset.tab === "f") fc();
+            if (b.dataset.tab === "d") dash();
+          }),
+      );
+      let dp;
+      addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        dp = e;
+        $("inst").hidden = false;
+      });
+      $("inst").onclick = async () => {
+        if (dp) {
+          dp.prompt();
+          await dp.userChoice;
+          dp = null;
+          $("inst").hidden = true;
+        }
+      };
+      if ("serviceWorker" in navigator)
+        addEventListener("load", () =>
+          navigator.serviceWorker.register("sw.js").catch(() => {}),
+        );
+      draw();
+    </script>
+  </body>
+</html>
