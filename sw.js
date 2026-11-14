@@ -1,5 +1,5 @@
 // Bump CACHE when you change any file so installed apps pick up the update.
-const CACHE = "wortschatz-v3";
+const CACHE = "wortschatz-v4";
 const FILES = ["./", "index.html", "words-data.js", "grammar-data.js", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => {
