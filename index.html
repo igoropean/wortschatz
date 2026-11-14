@@ -71,8 +71,12 @@ nav button.on{background:var(--acc);color:var(--accink)}
 .info{font-size:14px;line-height:1.6}.info table{width:auto;margin:6px 0}.info th,.info td{padding:4px 14px 4px 0;text-align:left;text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line)}
 @media(min-width:900px){nav{transform:none}body{padding-left:250px}#burger,#nb{display:none!important}}
 @media(max-width:640px){.wt{min-width:0}.wt thead{display:none}.wt tr{display:block;padding:9px 10px;border-bottom:1px solid var(--line)}.wt td{display:inline;border:0;padding:0}.wt td:nth-child(1),.wt td:nth-child(2){display:block}.wt td:nth-child(2){margin:2px 0 4px 72px}.wt td:nth-child(4){margin-left:6px}.ct td,.ct th{padding:6px 5px;font-size:12.5px;white-space:normal}.md{padding:14px}}
+.stick{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);margin:0 -14px 8px;padding:8px 14px 6px}
+.srow{display:flex;gap:8px}.srow .inp{flex:1;min-width:0}
+#fPanel{max-height:50vh;overflow:auto;margin:8px 0 2px}#count{margin-top:6px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
 </style></head><body><div class="wrap">
-<header><div class="top"><button class="btn" id="burger" aria-label="Menu">☰</button><h1 id="ttl">Mein Wortschatz</h1></div><div class="row" style="margin:0"><button class="btn" id="inst" hidden>Install app</button><button class="btn" id="addT">+ Add word</button><button class="btn" id="dataT">Backup</button></div></header>
+<header><div class="top"><button class="btn" id="burger" aria-label="Menu">☰</button><h1 id="ttl">Fiktur's Wortschatz</h1></div><div class="row" style="margin:0"><button class="btn" id="inst" hidden>Install app</button><button class="btn" id="addT">+ Add word</button><button class="btn" id="dataT">Backup</button></div></header>
 <nav id="nav"></nav><div id="nb" class="hide"></div>
 
 <div class="panel hide" id="addP"><div class="form">
@@ -88,9 +92,9 @@ nav button.on{background:var(--acc);color:var(--accink)}
 
 <section id="tw">
 <div class="panel info hide" id="info"></div>
-<input class="inp" id="q" placeholder="Search German or English…" autocomplete="off" style="margin-bottom:10px">
-<div class="row" id="fTypes"></div><div class="row" id="fGens"></div><div class="row" id="fLv"></div><div class="row" id="fSt"></div><div class="row" id="fC"></div>
-<div class="row"><span class="mute" id="count"></span></div>
+<div class="stick"><div class="srow"><input class="inp" id="q" placeholder="Search German or English…" autocomplete="off"><button class="btn" id="fBtn">Filters</button></div>
+<div class="panel hide" id="fPanel"><div class="row" id="fTypes"></div><div class="row" id="fGens"></div><div class="row" id="fLv"></div><div class="row" id="fSt"></div><div class="row" id="fC"></div><button class="btn" id="fClr">Clear filters</button></div>
+<div class="mute" id="count"></div></div>
 <div class="tw"><table class="wt"><thead><tr><th>German</th><th>English</th><th>Type</th><th>Level</th></tr></thead><tbody id="tb"></tbody></table></div>
 <button class="btn more" id="more">Show more</button>
 </section>
@@ -127,9 +131,11 @@ function draw(){
  $("fC").style.display=cl&&cs.length>1?"":"none";chips($("fC"),[["all","All"],...cs.map(c=>[c,c])],"c");
  $("info").innerHTML=INFO[st.coll]||"";$("info").classList.toggle("hide",!INFO[st.coll]);
  VIEW=pool.filter(w=>filt(w,st)&&(st.c==="all"||w.c===st.c));$("count").textContent=VIEW.length.toLocaleString()+" words";
+ const na=[st.type!=="all",st.gen!=="any",st.lvl!=="all",st.s!=="all",st.c!=="all"].filter(Boolean).length;$("fBtn").textContent="Filters"+(na?" ("+na+")":"");$("fBtn").classList.toggle("on",na>0);
  const v=VIEW.slice(0,st.n);
  $("tb").innerHTML=v.length?v.map((w,n)=>`<tr class="${w.mine?"mine ":""}${isL(w)?"lrn":""}"><td><button class="ic ${isL(w)?"on":""}" data-a="l" data-n="${n}" title="Mark learned">✓</button><button class="ic ${isB(w)?"on":""}" data-a="b" data-n="${n}" title="Bookmark">★</button><span class="de" data-a="o" data-n="${n}">${art(w)}${esc(w.de)}</span>${w.ex?`<span class="ex">${esc(w.ex)}</span>`:""}</td><td>${esc(w.en)}</td><td><span class="tag">${esc(w.t)}</span>${w.c?` <span class="tag">${esc(w.c)}</span>`:""}</td><td class="mute">${esc(w.l)}</td></tr>`).join(""):`<tr><td colspan="4" class="empty">No matches. Try another search, or add this word yourself.</td></tr>`;
  $("more").style.display=VIEW.length>st.n?"block":"none"}
+$("fBtn").onclick=()=>$("fPanel").classList.toggle("hide");$("fClr").onclick=()=>{st.type="all";st.gen="any";st.lvl="all";st.s="all";st.c="all";st.n=100;draw()};
 $("q").oninput=e=>{st.q=e.target.value;st.n=100;draw()};$("more").onclick=()=>{st.n+=200;draw()};
 $("tb").onclick=e=>{const b=e.target.closest("[data-a]");if(!b)return;const w=VIEW[+b.dataset.n];
  if(b.dataset.a==="o")openW(w);else{flip(w,b.dataset.a);draw()}};
@@ -198,7 +204,7 @@ function go(v,c){st.coll=c||"";st.c="all";st.n=100;if(v==="w"){st.type="all";st.
  ["w","f","d"].forEach(t=>$("t"+t).classList.toggle("hide",t!==v));
  $("ttl").textContent=TT[c]||{w:"Mein Wortschatz",f:"Flashcards",d:"Dashboard"}[v];
  $("nav").innerHTML="<h2>Mein Wortschatz</h2>"+NAV.map(n=>n[0]==="--"?`<small>${n[1]}</small>`:`<button class="${n[0]===v&&n[1]===(c||"")?"on":""}" data-v="${n[0]}" data-c="${n[1]}">${n[2]}</button>`).join("");
- if(v==="w")draw();if(v==="f")fc();if(v==="d")dash();closeNav();scrollTo(0,0)}
+ if(v==="w"){$("fPanel").classList.add("hide");draw()}if(v==="f")fc();if(v==="d")dash();closeNav();scrollTo(0,0)}
 $("burger").onclick=()=>{$("nav").classList.add("open");$("nb").classList.remove("hide")};$("nb").onclick=closeNav;
 $("nav").onclick=e=>{const b=e.target.closest("[data-v]");if(b)go(b.dataset.v,b.dataset.c)};
 let dp;addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").hidden=false});
